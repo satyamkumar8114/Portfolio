@@ -1,61 +1,67 @@
-/* =========================
+/* =========================================================
    MOBILE MENU
-========================= */
+========================================================= */
 
 const menuBtn = document.getElementById("menuBtn");
 const navLinks = document.getElementById("navLinks");
 
-menuBtn.addEventListener("click", () => {
+if (menuBtn && navLinks) {
 
-  navLinks.classList.toggle("active");
+  menuBtn.addEventListener("click", () => {
 
-  const icon = menuBtn.querySelector("i");
-
-  if (navLinks.classList.contains("active")) {
-    icon.classList.remove("fa-bars");
-    icon.classList.add("fa-xmark");
-  } else {
-    icon.classList.remove("fa-xmark");
-    icon.classList.add("fa-bars");
-  }
-
-});
-
-
-/* Close mobile menu after clicking a link */
-
-document.querySelectorAll(".nav-links a").forEach(link => {
-
-  link.addEventListener("click", () => {
-
-    navLinks.classList.remove("active");
+    navLinks.classList.toggle("active");
 
     const icon = menuBtn.querySelector("i");
 
-    icon.classList.remove("fa-xmark");
-    icon.classList.add("fa-bars");
+    if (navLinks.classList.contains("active")) {
+
+      icon.classList.remove("fa-bars");
+      icon.classList.add("fa-xmark");
+
+    } else {
+
+      icon.classList.remove("fa-xmark");
+      icon.classList.add("fa-bars");
+
+    }
 
   });
 
-});
+
+  /* Close menu after clicking a link */
+
+  navLinks.querySelectorAll("a").forEach(link => {
+
+    link.addEventListener("click", () => {
+
+      navLinks.classList.remove("active");
+
+      const icon = menuBtn.querySelector("i");
+
+      icon.classList.remove("fa-xmark");
+      icon.classList.add("fa-bars");
+
+    });
+
+  });
+
+}
 
 
-/* =========================
+/* =========================================================
    SCROLL REVEAL
-========================= */
+========================================================= */
 
 const revealElements = document.querySelectorAll(".reveal");
 
 const revealObserver = new IntersectionObserver(
   (entries) => {
 
-    entries.forEach((entry) => {
+    entries.forEach(entry => {
 
       if (entry.isIntersecting) {
 
         entry.target.classList.add("active");
-
-        revealObserver.unobserve(entry.target);
 
       }
 
@@ -67,97 +73,105 @@ const revealObserver = new IntersectionObserver(
   }
 );
 
+
 revealElements.forEach(element => {
+
   revealObserver.observe(element);
+
 });
 
 
-/* =========================
-   ACTIVE NAVIGATION
-========================= */
+/* =========================================================
+   ACTIVE NAV LINK
+========================================================= */
 
 const sections = document.querySelectorAll("section[id]");
 const navItems = document.querySelectorAll(".nav-links a");
 
-const sectionObserver = new IntersectionObserver(
-  (entries) => {
+window.addEventListener("scroll", () => {
 
-    entries.forEach(entry => {
+  let current = "";
 
-      if (entry.isIntersecting) {
+  sections.forEach(section => {
 
-        navItems.forEach(link => {
-          link.classList.remove("active");
-        });
+    const sectionTop = section.offsetTop - 150;
 
-        const activeLink =
-          document.querySelector(
-            `.nav-links a[href="#${entry.target.id}"]`
-          );
+    if (window.scrollY >= sectionTop) {
+      current = section.getAttribute("id");
+    }
 
-        if (activeLink) {
-          activeLink.classList.add("active");
-        }
+  });
 
-      }
 
-    });
+  navItems.forEach(link => {
 
-  },
-  {
-    threshold: 0.35
-  }
-);
+    link.classList.remove("active");
 
-sections.forEach(section => {
-  sectionObserver.observe(section);
+    if (link.getAttribute("href") === `#${current}`) {
+      link.classList.add("active");
+    }
+
+  });
+
 });
 
 
-/* =========================
+/* =========================================================
    MOUSE PARALLAX
-========================= */
+========================================================= */
 
-const profileCard = document.querySelector(".profile-card");
+const heroVisual = document.querySelector(".hero-visual");
 
-if (profileCard && window.innerWidth > 900) {
+if (heroVisual && window.innerWidth > 900) {
 
-  document.addEventListener("mousemove", (event) => {
+  heroVisual.addEventListener("mousemove", (event) => {
+
+    const rect = heroVisual.getBoundingClientRect();
 
     const x =
-      (event.clientX / window.innerWidth - 0.5) * 10;
+      (event.clientX - rect.left - rect.width / 2) / 30;
 
     const y =
-      (event.clientY / window.innerHeight - 0.5) * 10;
+      (event.clientY - rect.top - rect.height / 2) / 30;
 
-    profileCard.style.transform =
-      `rotate(${3 + x * 0.15}deg)
-       translate(${x}px, ${y}px)`;
+    heroVisual.style.transform =
+      `translate(${x}px, ${y}px)`;
+
+  });
+
+
+  heroVisual.addEventListener("mouseleave", () => {
+
+    heroVisual.style.transform = "translate(0, 0)";
 
   });
 
 }
 
 
-/* =========================
-   CURRENT YEAR
-========================= */
-
-const yearElement = document.querySelector(".footer-year");
-
-if (yearElement) {
-  yearElement.textContent = new Date().getFullYear();
-}
-
-
-/* =========================
-   SMOOTH BUTTON FEEDBACK
-========================= */
+/* =========================================================
+   BUTTON HOVER
+========================================================= */
 
 document.querySelectorAll(".btn").forEach(button => {
 
   button.addEventListener("mouseenter", () => {
-    button.style.transition = "0.25s ease";
+
+    button.style.transition = "0.3s ease";
+
   });
 
 });
+
+
+/* =========================================================
+   CURRENT YEAR
+========================================================= */
+
+const yearElement = document.getElementById("year");
+
+if (yearElement) {
+
+  yearElement.textContent = new Date().getFullYear();
+
+}
